@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "csopesy_mp", "csopesy_mp.vcxproj", "{7D382A33-824E-4077-9777-F869527B9AFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Debug|x64.ActiveCfg = Debug|x64
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Debug|x64.Build.0 = Debug|x64
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Debug|x86.ActiveCfg = Debug|Win32
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Debug|x86.Build.0 = Debug|Win32
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Release|x64.ActiveCfg = Release|x64
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Release|x64.Build.0 = Release|x64
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Release|x86.ActiveCfg = Release|Win32
+		{7D382A33-824E-4077-9777-F869527B9AFB}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B744E3A6-C728-4EDB-8ED6-45DA853DE6E3}
+	EndGlobalSection
+EndGlobal
