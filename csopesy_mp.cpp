@@ -25,11 +25,6 @@ public:
 		timeMade = getTime();
 		linesCompleted = 0;
 	}
-	void runCommand(const string& command) {
-		// Here, you can add logic to handle commands
-		cout << "Running command: " << command << endl;
-		// You can implement the command handling logic here
-	}
 	void showProcessInfo() {
 		cout << "Process Name: " << processName << endl;
 		cout << "Time Created: " << timeMade << endl;
@@ -55,19 +50,33 @@ public:
 				}
 				string temp_arg = tokenizedInput[1];
 				if (temp_arg == "-r") {
+					if (tokenizedInput.size() < 3) {
+						cout << "no arguments after using -r" << endl;
+						continue;
+					}
 					//reattach
 					for (auto element : processList) {
 						if (element.getProcessName() == tokenizedInput[2]) {
+							system("cls");
 							element.open();
+							system("cls");
+							showProcessInfo();
 						}
 					}
 				}
 				else if (temp_arg == "-s") {
 					//create new process
+					if (tokenizedInput.size() < 3) {
+						cout << "no arguments after using -s" << endl;
+						continue;
+					}
 					ScreenProcess newScreen(tokenizedInput[2]);
 					processList.push_back(newScreen);
 					cout << "new process added!" << endl;
+					system("cls");
 					newScreen.open();
+					system("cls");
+					showProcessInfo();
 				}
 				else if (temp_arg == "-ls") {
 					printActiveProcesses(processList);
@@ -128,19 +137,34 @@ int main() {
 			}
 			string temp_arg = tokenizedInput[1];
 			if (temp_arg == "-r") {
+				if (tokenizedInput.size() < 3) {
+					cout << "no arguments after using -r" << endl;
+					continue;
+				}
 				//reattach
 				for (auto element : processList) {
 					if (element.getProcessName() == tokenizedInput[2]) {
+						system("cls");
 						element.open();
+						system("cls");
+						printHeader();
 					}
 				}
 			}
 			else if (temp_arg == "-s") {
 				//create new process
+				if (tokenizedInput.size() < 3) {
+					cout << "no arguments after using -s" << endl;
+					continue;
+				}
 				ScreenProcess newScreen(tokenizedInput[2]);
 				processList.push_back(newScreen);
 				cout << "new process added!" << endl;
+				system("cls");
 				newScreen.open();
+				system("cls");
+				printHeader();
+
 			}
 			else if (temp_arg == "-ls") {
 				printActiveProcesses(processList);
