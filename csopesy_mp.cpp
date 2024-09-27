@@ -1,5 +1,7 @@
 //our functions
 #include "Utils.h"
+//console h
+#include "ConsoleManager.h"
 //import all libraries
 #include "stdc++.h"
 
