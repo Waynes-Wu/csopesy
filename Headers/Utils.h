@@ -64,7 +64,17 @@ void printVector(vector<string> vec) {
     cout << ESC << YELLOW_TXT << "------------------------------" << RESET << endl;
 }
 
+string getTime() {
+    // current time
+    time_t t = time(nullptr);
+    tm now;
+    localtime_s(&now, &t);
+    // format
+    char buffer[100];
+    strftime(buffer, sizeof(buffer), "%m/%d/%Y, %I:%M:%S %p", &now);
 
+    return string(buffer);
+}
 
 bool handleInput(string input) {
 
@@ -87,7 +97,6 @@ bool handleInput(string input) {
         cout << "clear command recognized. Doing something." << endl;
         system("cls");
         printHeader();
-        printHello();
     }
 
     else if (input == "exit") {
