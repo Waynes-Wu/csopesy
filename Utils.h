@@ -13,12 +13,12 @@
 
 using namespace std;
 
-void printHello() {
+inline void printHello() {
 	cout << "Hellow" << endl;
 }
 
 
-void printHeader() {
+inline void printHeader() {
 
     string header = R"(OObtained from: https://patorjk.com/software/taag/#p=display&f=Jazmine&t=CSOPESY
     .oPYo. .oPYo. .oPYo.  .oPYo. .oPYo. .oPYo. o   o 
@@ -37,7 +37,7 @@ void printHeader() {
 
 }
 
-vector<string> splitInput(string input) {
+inline vector<string> splitInput(string input) {
 
     vector<string> tokens;
 
@@ -53,7 +53,7 @@ vector<string> splitInput(string input) {
     return tokens;
 }
 
-void printVector(vector<string> vec) {
+inline void printVector(vector<string> vec) {
     cout << ESC << YELLOW_TXT << "------------------------------" << RESET <<endl;
     cout << "Vector size: " << vec.size() << endl;  // Print vector size
     cout << "Vector elements:" << endl;
@@ -64,9 +64,17 @@ void printVector(vector<string> vec) {
     cout << ESC << YELLOW_TXT << "------------------------------" << RESET << endl;
 }
 
+inline string getTime() {
+    // current time
+    time_t t = time(nullptr);
+    tm now;
+    localtime_s(&now, &t);
+    // format
+    char buffer[100];
+    strftime(buffer, sizeof(buffer), "%m/%d/%Y, %I:%M:%S %p", &now);
 
 
-bool handleInput(string input) {
+inline bool handleInput(string input) {
 
     if (input == "initialize")
         cout << "initialize command recognized. Doing something." << endl;
