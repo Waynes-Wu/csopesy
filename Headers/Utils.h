@@ -72,6 +72,8 @@ inline string getTime() {
     // format
     char buffer[100];
     strftime(buffer, sizeof(buffer), "%m/%d/%Y, %I:%M:%S %p", &now);
+    return buffer;
+}
 
 
 inline bool handleInput(string input) {

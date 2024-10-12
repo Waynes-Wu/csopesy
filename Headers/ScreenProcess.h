@@ -3,6 +3,8 @@
 #include "stdc++.h"
 #include "Utils.h" 
 
+using namespace std;
+
 class ScreenProcess { 
 private:
     string processName;
@@ -21,9 +23,8 @@ public:
     void open();
 
     void showProcessInfo();
-    static void printActiveProcesses(const vector<ScreenProcess> processList);
-
-
-
+    void printActiveProcesses();
+private:
+    bool inputChecker(string& input);
 };
 

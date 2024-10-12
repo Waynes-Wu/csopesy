@@ -25,7 +25,7 @@ public:
 
     void open();
 
-    static void printActiveProcesses(const vector<ScreenProcess> processList);
+    void printActiveProcesses();
 
  private:
      bool inputChecker(string &input);

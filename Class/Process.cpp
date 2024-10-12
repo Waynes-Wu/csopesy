@@ -1,8 +1,5 @@
 #include "../Headers/Process.h"
 
-using namespace std;
-
-
 Process::Process(string name) {
 	processName = name;
 	timeMade = getTime();
@@ -15,7 +12,6 @@ string Process::getProcessName() {
 
 void Process::open() {
 
-
 	printHeader();
 
 	while (true) {
@@ -25,13 +21,9 @@ void Process::open() {
 			break;
 	}
 
-
-
-
-
 }
 
-void Process::printActiveProcesses(vector <ScreenProcess> processList) {
+void Process::printActiveProcesses() {
 	cout << ESC << YELLOW_TXT << "------------------------------" << RESET << endl;
 	cout << processList.size() << " ACTIVE PROCESSES" << endl;  // Print vector size
 
@@ -67,10 +59,11 @@ bool Process::inputChecker(string &input) {
 		//THIS POINT ONWARD CONFIG SHOULD BE INITIALIZED ALREADY
 
 		if (main_command == "screen") {
+			if (commandCount == 1) { cout << "use -r -s or -ls" << endl; return true; }
 			string arg_command = tokenizedInput[1];
 			//RE-ATTACH TO THE GIVEN THINGY
 			if (arg_command == "-r") {
-				if (commandCount < 3) { cout << "no arguments after using -r" << endl; }
+				if (commandCount < 3) { cout << "no arguments after using -r" << endl; return true;}
 				bool isFound = false;
 				for (auto element : processList) {
 					if (element.getProcessName() == tokenizedInput[2]) {
@@ -97,10 +90,9 @@ bool Process::inputChecker(string &input) {
 				printHeader();
 			}
 			else if (arg_command == "-ls") {
-				printActiveProcesses(processList);
+				printActiveProcesses();
 			}
 		}
-		else if (main_command == "screen");
 		else if (main_command == "scheduler-test");
 		else if (main_command == "scheduler-stop");
 		else if (main_command == "report-util");
@@ -114,6 +106,8 @@ bool Process::inputChecker(string &input) {
 			cout << input << " command unrecognized" << endl;
 			cout << RESET;
 		}
+		
+		
 		return true;
-	}
+}
 
