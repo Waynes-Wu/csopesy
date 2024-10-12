@@ -131,13 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Class\configReader.cpp" />
+    <ClCompile Include="Class\ConfigReader.cpp" />
+    <ClCompile Include="Class\MainProcess.cpp" />
     <ClCompile Include="Class\Process.cpp" />
     <ClCompile Include="Class\ScreenProcess.cpp" />
     <ClCompile Include="csopesy_mp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\configReader.h" />
+    <ClInclude Include="Headers\ConfigReader.h" />
+    <ClInclude Include="Headers\MainProcess.h" />
     <ClInclude Include="Headers\Process.h" />
     <ClInclude Include="Headers\ScreenProcess.h" />
     <ClInclude Include="Headers\stdc++.h" />

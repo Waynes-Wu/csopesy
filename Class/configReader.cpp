@@ -1,4 +1,4 @@
-#include "../Headers/configReader.h"
+#include "../Headers/ConfigReader.h"
 
 bool readConfig(Config &config) {
     ifstream configFile("config.txt");

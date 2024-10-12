@@ -2,33 +2,31 @@
 
 #include "stdc++.h"
 #include "Utils.h" 
+#include "ScreenProcess.h"
+#include "ConfigReader.h"
 
 using namespace std;
 
-class ScreenProcess { 
+class MainProcess {
 private:
     string processName;
     string timeMade;
     string input;
-
-    int linesCompleted;
-    int numberOfProcess;
-
-    //this is not important, this is for screen
     vector<ScreenProcess> processList;
+    Config config;
 
 public:
     // Constructor
-    ScreenProcess(string name);
+    MainProcess(string name);
 
     // Getters
     string getProcessName();
 
     void open();
 
-    void showProcessInfo();
     void printActiveProcesses();
-private:
-    bool inputChecker(string& input);
+
+ private:
+     bool inputChecker(string &input);
 };
 

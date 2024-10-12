@@ -18,13 +18,16 @@
     <ClCompile Include="csopesy_mp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class\Process.cpp">
+    <ClCompile Include="Class\MainProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Class\ScreenProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Class\configReader.cpp">
+    <ClCompile Include="Class\ConfigReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Class\Process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,13 +38,16 @@
     <ClInclude Include="Headers\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Process.h">
+    <ClInclude Include="Headers\MainProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\ScreenProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\configReader.h">
+    <ClInclude Include="Headers\ConfigReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Process.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

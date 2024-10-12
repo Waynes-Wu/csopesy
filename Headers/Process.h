@@ -1,33 +1,38 @@
 #pragma once
 
-#include "stdc++.h"
+#include <mutex>
+#include <thread>
+#include <chrono>
 #include "Utils.h" 
-#include "ScreenProcess.h"
-#include "configReader.h"
 
 using namespace std;
 
+
 class Process {
-private:
-    string processName;
-    string timeMade;
-    int linesCompleted;
-    string input;
-    vector<ScreenProcess> processList;
-    Config config;
-
 public:
-    // Constructor
-    Process(string name);
+	int pid;
+	int currentStep;
+	int totalSteps;
 
-    // Getters
-    string getProcessName();
+	bool isRunning;
+	bool isFinished;
 
-    void open();
+	int coreID;
 
-    void printActiveProcesses();
+	string startTime;
+	string finishTime;
+	mutex logMutex;
 
- private:
-     bool inputChecker(string &input);
+	//functions
+	Process(int id, int steps);
+	
+	void start(int assignedCoreID);
+
+	void stop();
+
+	void runStep();
+
+	void finish();
+
+	void printStatus();
 };
-

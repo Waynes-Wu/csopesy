@@ -2,13 +2,13 @@
 #include "Headers/Utils.h"
 //import all libraries
 #include "Headers/stdc++.h"
-#include "Headers/Process.h"
+#include "Headers/MainProcess.h"
 using namespace std;
 
 
 
 int main() {
-	Process mainProcess("main");
+	MainProcess mainProcess("main");
 	mainProcess.open();
 
 	return 0;
