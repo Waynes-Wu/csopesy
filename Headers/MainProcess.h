@@ -4,6 +4,7 @@
 #include "Utils.h" 
 #include "ScreenProcess.h"
 #include "ConfigReader.h"
+#include "Scheduler.h"
 
 using namespace std;
 
@@ -12,8 +13,9 @@ private:
     string processName;
     string timeMade;
     string input;
-    vector<ScreenProcess> processList;
+    vector<ScreenProcess*> processList;
     Config config;
+    Scheduler *scheduler;
 
 public:
     // Constructor

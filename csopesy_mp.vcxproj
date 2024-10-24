@@ -134,6 +134,7 @@
     <ClCompile Include="Class\ConfigReader.cpp" />
     <ClCompile Include="Class\MainProcess.cpp" />
     <ClCompile Include="Class\Process.cpp" />
+    <ClCompile Include="Class\Scheduler.cpp" />
     <ClCompile Include="Class\ScreenProcess.cpp" />
     <ClCompile Include="csopesy_mp.cpp" />
   </ItemGroup>
@@ -141,6 +142,7 @@
     <ClInclude Include="Headers\ConfigReader.h" />
     <ClInclude Include="Headers\MainProcess.h" />
     <ClInclude Include="Headers\Process.h" />
+    <ClInclude Include="Headers\Scheduler.h" />
     <ClInclude Include="Headers\ScreenProcess.h" />
     <ClInclude Include="Headers\stdc++.h" />
     <ClInclude Include="Headers\Utils.h" />

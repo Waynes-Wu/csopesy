@@ -1,10 +1,8 @@
 #include "../Headers/ScreenProcess.h"
 
-ScreenProcess::ScreenProcess(string name) {
-	processName = name;
-	timeMade = getTime();
-	linesCompleted = 0;
-}
+ScreenProcess::ScreenProcess(string name) : coreID(-1), isRunning(false), isFinished(false), processName(name), timeMade(getTime()), numberOfProcess(10), linesCompleted(0) {}
+
+ScreenProcess::ScreenProcess(string name, int numberOfProcesses) : coreID(-1), isRunning(false), isFinished(false), processName(name), timeMade(getTime()), numberOfProcess(numberOfProcesses), linesCompleted(0) {}
 
 string ScreenProcess::getProcessName() {
 	return processName;
@@ -20,7 +18,7 @@ void ScreenProcess::open() {
 
 	showProcessInfo();
 
-
+	
 	while (true) {
 		cout << "INSIDE_" << processName << "> ";
 		getline(cin, input);
@@ -30,7 +28,7 @@ void ScreenProcess::open() {
 
 }
 
-
+//THIS WILL NEVER USED, THIS IS SCREEN
 void ScreenProcess::printActiveProcesses() {
 	cout << ESC << YELLOW_TXT << "------------------------------" << RESET << endl;
 	cout << processList.size() << " ACTIVE PROCESSES" << endl;  // Print vector size
@@ -42,7 +40,7 @@ void ScreenProcess::printActiveProcesses() {
 	cout << ESC << YELLOW_TXT << "------------------------------" << RESET << endl;
 }
 
-
+//LITERALLY IGNORE EVERYTHING HERE
 bool ScreenProcess::inputChecker(string& input) {
 	vector<string> tokenizedInput = splitInput(input);
 
@@ -84,10 +82,10 @@ bool ScreenProcess::inputChecker(string& input) {
 			printActiveProcesses();
 		}
 	}
-	else if (main_command == "scheduler-test");
-	else if (main_command == "scheduler-stop");
-	else if (main_command == "report-util");
-	else if (main_command == "clear");
+	//else if (main_command == "scheduler-test");
+	//else if (main_command == "scheduler-stop");
+	//else if (main_command == "report-util");
+	//else if (main_command == "clear");
 
 	else if (main_command == "exit")
 		return false;
@@ -101,3 +99,72 @@ bool ScreenProcess::inputChecker(string& input) {
 
 	return true;
 }
+
+
+void ScreenProcess::start() {
+	//coreID = assignedCoreID;
+
+	//check if running
+	isRunning = true;
+	timeMade = getTime();
+
+	//if possible you could link this to runStep have it thread?
+}
+
+void ScreenProcess::stop() {
+	coreID = -1;
+	isRunning = false;
+	timeFinished = getTime();
+
+}
+
+void ScreenProcess::runStep() {
+
+	//should make it while loop instead?
+
+	if (linesCompleted < numberOfProcess && isRunning) {
+		linesCompleted++;
+		string name = getProcessName();
+		cout << name << " > executed process " << linesCompleted << endl;
+		//doSomething like
+		//cout << executed at getTime()
+		//maybe write in file or whatever
+	}
+	else finish();
+
+
+	//for threading something similar should be done (while loop)
+	//void ScreenProcess::runStep() {
+	//	while (linesCompleted < numberOfProcess && isRunning) {
+	//		linesCompleted++;
+	//		cout << processName << "> executed process " << linesCompleted;
+	//		// Additional actions like logging or writing to a file
+	//	}
+	//	if (linesCompleted == numberOfProcess) {
+	//		finish();
+	//	}
+	//}
+
+}
+
+void ScreenProcess::finish() {
+	//confirm if its finished
+	if (linesCompleted == numberOfProcess) {
+		stop();
+		isFinished = true;
+	}
+}
+
+void ScreenProcess::printStatus() {
+	string displayTime;
+	//displayTime = getTime();  //if current time
+	//displayTime = startTime;  //if started running/resume
+
+	string displayCore;
+	displayCore = (isFinished) ? "Finished" : ("Core: " + to_string(coreID));
+
+	cout << "process" << processName << "\t" <<
+		"(" << displayTime << ")\t" <<
+		displayCore << "\t" <<
+		linesCompleted << " / " << numberOfProcess<<endl;
+};
