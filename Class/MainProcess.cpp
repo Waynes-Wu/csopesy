@@ -14,15 +14,29 @@ string MainProcess::getProcessName() {
 void MainProcess::open() {
 
 	printHeader();
-
+	
 	while (true) {
 		cout << "Enter a command: ";
 		getline(cin, input);
 		if (!inputChecker(input)) 
 			break;
+		scheduler->generateProcesses(CPUCOUNTER, processList);
+
+
+
+
+		CPUCOUNTER++;
 	}
 
 }
+
+void MainProcess::addProcess(ScreenProcess* process) {
+	processList.push_back(process);
+	//flag that new process was added
+	scheduler->newProcessFlag = true;
+}
+
+
 
 void MainProcess::printActiveProcesses() {
 	cout << ESC << YELLOW_TXT << "------------------------------" << RESET << endl;
@@ -68,8 +82,15 @@ bool MainProcess::inputChecker(string &input) {
 				if (commandCount < 3) { cout << "no arguments after using -r" << endl; return true;}
 				bool isFound = false;
 				for (auto element : processList) {
+					//process name matches user input
 					if (element->getProcessName() == tokenizedInput[2]) {
 						isFound = true;
+
+						if (element->isFinished) {
+							cout << "Process finished cannot be opened/resumed" << endl;
+							break;
+						}
+						// open unfinished process
 						system("cls");
 						element->open();
 						system("cls");
@@ -83,54 +104,36 @@ bool MainProcess::inputChecker(string &input) {
 			else if (arg_command == "-s") {
 				// CREATE NEW PROCESS
 				if (commandCount < 3) { cout << "no arguments after using -s" << endl; }
-				ScreenProcess newScreen(tokenizedInput[2]);
-				processList.push_back(&newScreen);
-				newScreen.isRunning = true;
-				cout << "new process added! " << newScreen.getProcessName() << endl;
+				ScreenProcess* newScreen = new ScreenProcess(tokenizedInput[2]);
+				addProcess(newScreen);
+				newScreen->isRunning = true;
 				system("cls");
-				newScreen.open();
+				newScreen->open();
 				system("cls");
 				printHeader();
 			}
 			else if (arg_command == "-ls") {
+
+				//queue<ScreenProcess*> tempQueue = scheduler->readyQueue;
+				//while (!tempQueue.empty()) {
+				//	ScreenProcess* process = tempQueue.front();
+				//	//cout << process->getProcessName() << endl;
+				//	cout << "process:   " << process->getProcessName() << "\t" <<
+				//		"(" << "time" << ")\t" <<
+				//		process->coreID << "\t" <<
+				//		process->linesCompleted << " / " << process->numberOfProcess << endl;
+
+				//	tempQueue.pop();
+				//}
+
 				printActiveProcesses();
 			}
 		}
 		else if (main_command == "scheduler-test") {
-
-			// check if thread not running
-			if (!generatorThread.joinable()) { 
-				generatorThread = thread(&Scheduler::generateProcesses, scheduler);
-			}
-			else {
-				cout << "Process generation is already running." << endl;
-			}
-
-			//ScreenProcess hi("lmao");
-			//scheduler->addProcess(&hi);
-			//scheduler->generateProcesses();
-
-
+			scheduler->generate = true;
 		}
 		else if (main_command == "scheduler-stop") {
 			scheduler->generate = false;
-			if (generatorThread.joinable()) {
-				generatorThread.join(); 
-				cout << "Process generation stopped." << endl;
-			}
-
-			//for printing RQ/processes not sure where or how
-			queue<ScreenProcess*> tempQueue = scheduler->readyQueue;
-			while (!tempQueue.empty()) {
-				ScreenProcess* process = tempQueue.front();
-				//cout << process->getProcessName() << endl;
-				cout << "process:   " << process->getProcessName() << "\t" <<
-					"(" << "time" << ")\t" <<
-					process->coreID << "\t" <<
-					process->linesCompleted << " / " << process->numberOfProcess<< endl;
-
-				tempQueue.pop();
-			}
 		}
 
 		else if (main_command == "report-util");

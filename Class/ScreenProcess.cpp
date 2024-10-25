@@ -11,7 +11,8 @@ string ScreenProcess::getProcessName() {
 void ScreenProcess::showProcessInfo() {
 	cout << "Process Name: " << processName << endl;
 	cout << "Time Created: " << timeMade << endl;
-	cout << "Lines Completed: " << linesCompleted << endl;
+	cout << "Lines Completed: " << linesCompleted;
+	cout << "/" << numberOfProcess << endl;
 }
 
 void ScreenProcess::open() {

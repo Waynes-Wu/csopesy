@@ -2,7 +2,6 @@
 #include "../Headers/ScreenProcess.h"
 #include "../Headers/ConfigReader.h"
 
-
 using namespace std;
 #include <queue>
 #include <vector>
@@ -18,41 +17,37 @@ public:
 
     atomic<bool> generate;
     queue<ScreenProcess*> readyQueue;
+    bool newProcessFlag = false;
 
     // Constructor
     Scheduler(Config config);
 
-    // Function to add a process to the ready queue
-    void addProcess(ScreenProcess* process);
     //generate random values [config.min-ins, config.max - ins]
-    void generateProcesses();
+    void generateProcesses(int CPUCOUNTER, vector<ScreenProcess*>& processList);
+    void stopGenerateProcesses();
 
-    //MAKE THREADING
 
     // Scheduling algorithms make empty first
     void startRoundRobin(int timeQuantum);
     void startFCFS();
     void startSJF();
 
-    // Function to stop the scheduler
-    void stop();
+
 
     // Optional: function to report CPU utilization
     void reportUtilization();
 
 private:
     int nextPid;
-    
     int numCPUs; 
     Config config;
-
     
     //not sure if needed
     vector<thread> cpuThreads;  
     mutex queueMutex;                
     
+    bool isRunning;                          
 
-    bool running;                          
 
     //?
     condition_variable queueCondVar; 

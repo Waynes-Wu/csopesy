@@ -10,12 +10,12 @@ using namespace std;
 
 class MainProcess {
 private:
+    Scheduler* scheduler = nullptr;
     string processName;
     string timeMade;
     string input;
     vector<ScreenProcess*> processList;
     Config config;
-    Scheduler *scheduler;
 
 public:
     // Constructor
@@ -25,10 +25,11 @@ public:
     string getProcessName();
 
     void open();
-
+    void addProcess(ScreenProcess* process);
     void printActiveProcesses();
 
  private:
      bool inputChecker(string &input);
+     int CPUCOUNTER = 1;
 };
 
