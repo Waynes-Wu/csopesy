@@ -5,6 +5,7 @@
 #include "ScreenProcess.h"
 #include "ConfigReader.h"
 #include "Scheduler.h"
+#include<conio.h>
 
 using namespace std;
 
@@ -31,5 +32,6 @@ public:
  private:
      bool inputChecker(string &input);
      int CPUCOUNTER = 1;
+     bool initialized = false;
 };
 

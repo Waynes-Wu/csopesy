@@ -20,19 +20,15 @@ public:
     bool newProcessFlag = false;
 
     // Constructor
-    Scheduler(Config config);
+    Scheduler(Config config, vector<ScreenProcess*>* processList);
 
     //generate random values [config.min-ins, config.max - ins]
-    void generateProcesses(int CPUCOUNTER, vector<ScreenProcess*>& processList);
+    void generateProcesses(int CPUCOUNTER);
     void stopGenerateProcesses();
 
 
-    // Scheduling algorithms make empty first
-    void startRoundRobin(int timeQuantum);
-    void startFCFS();
-    void startSJF();
-
-
+    void start();
+    bool newProcessAdded = false;
 
     // Optional: function to report CPU utilization
     void reportUtilization();
@@ -41,18 +37,22 @@ private:
     int nextPid;
     int numCPUs; 
     Config config;
-    
+
+    vector<ScreenProcess*>* processList;
+
     //not sure if needed
     vector<thread> cpuThreads;  
     mutex queueMutex;                
     
     bool isRunning;                          
 
+    // Scheduling algorithms make empty first
+    void startRoundRobin(int timeQuantum);
+    void startFCFS();
+    void startSJF();
 
     //?
     condition_variable queueCondVar; 
 
-    // Internal method to execute a process on a specific CPU
-    //void executeProcess(int cpuID, ScreenProcess process);
 };
 

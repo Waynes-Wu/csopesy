@@ -14,18 +14,28 @@ string MainProcess::getProcessName() {
 void MainProcess::open() {
 
 	printHeader();
-	
+	cout << "Enter a command: ";
 	while (true) {
-		cout << "Enter a command: ";
-		getline(cin, input);
-		if (!inputChecker(input)) 
-			break;
-		scheduler->generateProcesses(CPUCOUNTER, processList);
+		
 
-
-
-
+		//ask for user char, when string complete return true
+		if (getInput(input)) {
+			//check string input/command and execute
+			//false = exit
+			if (!inputChecker(input)) 
+				break;
+			cout << "Enter a command: ";
+		}
+		if (initialized) {
+			scheduler->generateProcesses(CPUCOUNTER);
+			scheduler->start();
+		}
+		
+		// slow down counter
+		this_thread::sleep_for(chrono::milliseconds(100));
+		/*cout << CPUCOUNTER << " | ";*/
 		CPUCOUNTER++;
+		
 	}
 
 }
@@ -51,17 +61,19 @@ void MainProcess::printActiveProcesses() {
 
 // PRIVATE FUNCTIONS-------------------
 
-bool MainProcess::inputChecker(string &input) {
+bool MainProcess::inputChecker(string & input) {
 		vector<string> tokenizedInput = splitInput(input);
 
 
 		int commandCount = tokenizedInput.size();
 		string main_command = tokenizedInput[0];
+
 		if (!config.isInitialized) {
 			if (main_command == "initialize") {
 				if (readConfig(config)) {
 					cout << "Configuration loaded successfully!" << endl;
-					scheduler = new Scheduler(config);
+					scheduler = new Scheduler(config, &processList);
+					initialized = true;
 				}
 				else {
 					cout << "Something went wrong with initialization" << endl;
@@ -69,6 +81,7 @@ bool MainProcess::inputChecker(string &input) {
 			}
 			else
 				cout << "Not initialized" << endl;
+			input.clear();
 			return true;
 		}
 
@@ -106,6 +119,7 @@ bool MainProcess::inputChecker(string &input) {
 				if (commandCount < 3) { cout << "no arguments after using -s" << endl; }
 				ScreenProcess* newScreen = new ScreenProcess(tokenizedInput[2]);
 				addProcess(newScreen);
+				scheduler->newProcessAdded = true;
 				newScreen->isRunning = true;
 				system("cls");
 				newScreen->open();
@@ -137,8 +151,8 @@ bool MainProcess::inputChecker(string &input) {
 		}
 
 		else if (main_command == "report-util");
-		else if (main_command == "clear");
-
+		else if (main_command == "clear")
+			system("cls");
 		else if (main_command == "exit") 
 			return false;
 		
@@ -161,18 +175,12 @@ bool MainProcess::inputChecker(string &input) {
 
 			}
 		}
-
-
-
-
-
 		else {
 			cout << ESC << GREEN_TXT;
 			cout << input << " command unrecognized" << endl;
 			cout << RESET;
 		}
-		
-		
+		input.clear();
 		return true;
 }
 

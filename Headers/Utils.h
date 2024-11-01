@@ -1,5 +1,5 @@
 #pragma once
-
+#include<conio.h>
 #define ESC "\033["
 
 #define YELLOW_TXT "93m"
@@ -113,4 +113,27 @@ inline bool handleInput(string input) {
     return true;
 }
 
+inline bool getInput(string & input) {
+    char ch;
 
+    if (_kbhit()) {
+        ch = _getch();  // Get the character
+
+        if (ch == '\r') {  // Enter key
+            cout << endl;
+            return true;  
+        }
+        else if (ch == '\b') {  // Backspace key
+            if (!input.empty()) {
+                input.pop_back();
+                cout << "\b \b";  // Move back, overwrite with space, move back again
+            }
+        }
+        else {
+            input += ch;
+            cout << ch;  // Echo character
+        }
+        return false;
+    }
+    return false;
+}

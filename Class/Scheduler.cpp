@@ -1,22 +1,26 @@
 #include "../Headers/Scheduler.h"
 
 // Constructor
-Scheduler::Scheduler(Config config) : config(config), nextPid(0), generate(false), numCPUs(config.num_cpu), isRunning(false) {}
+Scheduler::Scheduler(Config config, vector<ScreenProcess*>* processList) : config(config), processList(processList), nextPid(0), generate(false), numCPUs(config.num_cpu), isRunning(false) {
+    srand(static_cast<unsigned>(time(0)));
+}
+
 
 
 // Function to generate processes infinitely until stopped
-void Scheduler::generateProcesses(int CPUCOUNTER, vector<ScreenProcess*>& processList) {
-    srand(static_cast<unsigned>(time(0)));
+//vector<ScreenProcess*>& processList
+void Scheduler::generateProcesses(int CPUCOUNTER) {
     //while (generate && CPUCOUNTER % config.batch_process_freq == 0) {
     if (generate && CPUCOUNTER % config.batch_process_freq == 0) {
         // Generate a random process (this is a placeholder)
         int randomSteps = rand() % (config.max_ins - config.min_ins + 1) + config.min_ins;
         ScreenProcess *newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps);
 
-        processList.push_back(newProcess);
-        
+        processList->push_back(newProcess);
+        newProcessAdded = true;
         //this_thread::sleep_for(chrono::milliseconds(1000));
     }
+    return;
 }
 void Scheduler::stopGenerateProcesses() {
     isRunning = false; // Set running to false to stop threads
@@ -24,8 +28,23 @@ void Scheduler::stopGenerateProcesses() {
 }
 
 
-//if flag = true then new process has arrived 
+void Scheduler::start() {
+   
+    if (config.scheduler == "FCFS") {
+        startFCFS();
+    }
+    else if (config.scheduler == "RR") {
+        startRoundRobin(config.quantum_cycles);
+    }
+    else if (config.scheduler == "SJF") {
+        startSJF();
+    }
+}
 
+
+
+
+//if flag = true then new process has arrived 
 void Scheduler::startRoundRobin(int timeQuantum) {
     //running = true;
     //vector<thread> threads;
@@ -64,14 +83,35 @@ void Scheduler::startRoundRobin(int timeQuantum) {
 
 void Scheduler::startFCFS() {
     isRunning = true;
-    //vector<thread> threads;
-
-    //if new process added
-        //add to queue
-
-    for (int i = 0; i < numCPUs; ++i) {
-        //check for vacant cpu
+   
+    if (newProcessAdded) {
+        readyQueue.push(processList->back());
+        newProcessAdded = false;
     }
+
+    // skip if no cpu available
+    //if (!cpu) {
+    //    continue; // for loop
+    //}
+
+    //skip if empty
+    if (readyQueue.empty()) {
+        //continue;
+        return;
+    }
+
+    //assuming single core
+
+    ScreenProcess* temp = readyQueue.front();
+    temp->runStep();
+    if (temp->isFinished) {
+        readyQueue.pop();
+    }
+    
+
+    ////check for vacant cpu
+    //for (int i = 0; i < numCPUs; ++i) {
+    //}
     
             
 

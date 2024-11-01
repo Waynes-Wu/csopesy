@@ -136,14 +136,14 @@ void ScreenProcess::runStep() {
 
 	//for threading something similar should be done (while loop)
 	//void ScreenProcess::runStep() {
-	//	while (linesCompleted < numberOfProcess && isRunning) {
-	//		linesCompleted++;
-	//		cout << processName << "> executed process " << linesCompleted;
-	//		// Additional actions like logging or writing to a file
-	//	}
-	//	if (linesCompleted == numberOfProcess) {
-	//		finish();
-	//	}
+		//while (linesCompleted < numberOfProcess && isRunning) {
+		//	linesCompleted++;
+		//	cout << processName << "> executed process " << linesCompleted << endl;
+		//	// Additional actions like logging or writing to a file
+		//}
+		//if (linesCompleted == numberOfProcess) {
+		//	finish();
+		//}
 	//}
 
 }
