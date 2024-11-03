@@ -3,6 +3,9 @@
 // Constructor
 Scheduler::Scheduler(Config config, vector<ScreenProcess*>* processList) : config(config), processList(processList), nextPid(0), generate(false), numCPUs(config.num_cpu), isRunning(false) {
     srand(static_cast<unsigned>(time(0)));
+    for (int i = 0; i < numCPUs; ++i) {
+        cpus.emplace_back(CPU(i));
+    }
 }
 
 
@@ -30,10 +33,10 @@ void Scheduler::stopGenerateProcesses() {
 
 void Scheduler::start() {
    
-    if (config.scheduler == "FCFS") {
+    if (config.scheduler == "fcfs") {
         startFCFS();
     }
-    else if (config.scheduler == "RR") {
+    else if (config.scheduler == "rr") {
         startRoundRobin(config.quantum_cycles);
     }
     else if (config.scheduler == "SJF") {
@@ -41,44 +44,46 @@ void Scheduler::start() {
     }
 }
 
-
+int Scheduler::getAvailCoreCount() {
+    int availCPU = 0;
+    for (auto& cpu : cpus) {
+        if (!cpu.isBusy())
+            availCPU++;
+    }
+    return availCPU;
+}
 
 
 //if flag = true then new process has arrived 
 void Scheduler::startRoundRobin(int timeQuantum) {
-    //running = true;
-    //vector<thread> threads;
+    isRunning = true;
 
-    //for (int i = 0; i < numCPUs; ++i) {
-    //    threads.emplace_back([this, i, timeQuantum]() {
-    //        while (running) {
-    //            ScreenProcess process;
+    if (newProcessAdded) {
+        readyQueue.push(processList->back());
+        newProcessAdded = false;
+    }
 
-    //            {
-    //                unique_lock<mutex> lock(queueMutex);
-    //                queueCondVar.wait(lock, [this] { return !readyQueue.empty() || !running; });
+    int availCPU = getAvailCoreCount();
 
-    //                if (!running) break; // Exit if not running
-    //                process = readyQueue.front(); // Get the process from the front
-    //                readyQueue.pop();              // Remove it from the queue
-    //            }
+    for (auto& cpu : cpus) {
+        if (!cpu.isBusy()) {
+            //if cpu is not busy and has process
+            if (cpu.currentProcess != nullptr) {
+            readyQueue.push(cpu.currentProcess);
+            }
 
-    //            // Execute the process
-    //            process.start(i); // Start the process on CPU i
-    //            for (int j = 0; j < timeQuantum && !process.isFinished(); ++j) {
-    //                process.runStep(); // Run steps of the process
-    //            }
-    //            if (!process.isFinished()) {
-    //                addProcess(process); // Re-add to the queue if not finished
-    //            }
-    //        }
-    //        });
-    //}
+            //do this after its been pushed
+            if (!readyQueue.empty()) {
+            cpu.assignProcess(readyQueue.front());
+            readyQueue.pop();
+             
+            // Threaded execution with time slice
+            thread(static_cast<void (CPU::*)(int, int)>(&CPU::run), &cpu, config.delays_per_exec, timeQuantum).detach();
 
-    //// Join threads after running
-    //for (auto& thread : threads) {
-    //    thread.join();
-    //}
+            }
+
+        }
+    }
 }
 
 void Scheduler::startFCFS() {
@@ -88,35 +93,20 @@ void Scheduler::startFCFS() {
         readyQueue.push(processList->back());
         newProcessAdded = false;
     }
-
-    // skip if no cpu available
-    //if (!cpu) {
-    //    continue; // for loop
-    //}
-
-    //skip if empty
-    if (readyQueue.empty()) {
-        //continue;
-        return;
-    }
-
-    //assuming single core
-
-    ScreenProcess* temp = readyQueue.front();
-    temp->runStep();
-    if (temp->isFinished) {
-        readyQueue.pop();
-    }
     
+    int availCPU = getAvailCoreCount();
 
-    ////check for vacant cpu
-    //for (int i = 0; i < numCPUs; ++i) {
-    //}
-    
-            
+    for (auto& cpu : cpus) {
+        if (!cpu.isBusy() && !readyQueue.empty()) {
+            cpu.assignProcess(readyQueue.front());
+            readyQueue.pop();
 
-
-
+            //threaded
+            thread(static_cast<void (CPU::*)(int)>(&CPU::run), &cpu, config.delays_per_exec).detach();
+        }
+        ////non-threaded running
+        //cpu.run();
+    }
 }
 
 void Scheduler::startSJF() {

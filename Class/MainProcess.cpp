@@ -32,7 +32,7 @@ void MainProcess::open() {
 		}
 		
 		// slow down counter
-		this_thread::sleep_for(chrono::milliseconds(100));
+		this_thread::sleep_for(chrono::milliseconds(10));
 		/*cout << CPUCOUNTER << " | ";*/
 		CPUCOUNTER++;
 		
@@ -127,20 +127,45 @@ bool MainProcess::inputChecker(string & input) {
 				printHeader();
 			}
 			else if (arg_command == "-ls") {
+				vector<ScreenProcess*> activeProcesses;
+				vector<ScreenProcess*> finishedProcesses;
 
-				//queue<ScreenProcess*> tempQueue = scheduler->readyQueue;
-				//while (!tempQueue.empty()) {
-				//	ScreenProcess* process = tempQueue.front();
-				//	//cout << process->getProcessName() << endl;
-				//	cout << "process:   " << process->getProcessName() << "\t" <<
-				//		"(" << "time" << ")\t" <<
-				//		process->coreID << "\t" <<
-				//		process->linesCompleted << " / " << process->numberOfProcess << endl;
+				// Separate active and finished processes
+				for (auto* process : processList) {
+					if (process->isFinished) {
+						finishedProcesses.push_back(process);
+					}
+					else {
+						activeProcesses.push_back(process);
+					}
+				}
+				int coreCount = scheduler->getAvailCoreCount();
+				// Display CPU utilization and cores information
+				cout << "CPU utilization: " << (config.num_cpu - coreCount) / config.num_cpu * 100 << "%" << endl;
+				cout << "Cores used: " << config.num_cpu - coreCount << endl;
+				cout << "Cores available: " << coreCount<< endl;
+				cout << ESC << YELLOW_TXT << "\n----------------------------------------------------------" << RESET << endl;
+				cout << "Running processes:" << endl;
+				cout << setw(15) << "Process Name" << setw(30) << "(time)" << setw(10) << "Core" << setw(20) << "Lines" << endl;
 
-				//	tempQueue.pop();
-				//}
+				for (const auto& process : activeProcesses) {
+					cout << setw(15) << process->getProcessName()
+						<< setw(30) << process->timeMade
+						<< setw(10) << (process->coreID == -1 ? "" : to_string(process->coreID))
+						<< setw(20) << process->linesCompleted << "/" << process->numberOfProcess << endl;
+				}
 
-				printActiveProcesses();
+				cout << "\nFinished processes:" << endl;
+				cout << setw(15) << "Process Name" << setw(30) << "(time)" << setw(10) << "Status" << setw(20) << "Lines" << endl;
+
+				for (const auto& process : finishedProcesses) {
+					cout << setw(15) << process->getProcessName()
+						<< setw(30) << process->timeFinished 
+						<< setw(10) << "Finished"
+						<< setw(20) << process->linesCompleted << "/" << process->numberOfProcess << endl;
+				}
+
+				cout << ESC << YELLOW_TXT << "\n----------------------------------------------------------" << RESET << endl;
 			}
 		}
 		else if (main_command == "scheduler-test") {

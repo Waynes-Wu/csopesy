@@ -11,6 +11,7 @@ using namespace std;
 #include <cstdlib>
 #include <ctime>
 #include <atomic>
+#include "CPU.h"
 
 class Scheduler {
 public:
@@ -26,6 +27,7 @@ public:
     void generateProcesses(int CPUCOUNTER);
     void stopGenerateProcesses();
 
+    vector<CPU> cpus;
 
     void start();
     bool newProcessAdded = false;
@@ -33,6 +35,7 @@ public:
     // Optional: function to report CPU utilization
     void reportUtilization();
 
+    int getAvailCoreCount();
 private:
     int nextPid;
     int numCPUs; 

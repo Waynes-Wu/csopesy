@@ -108,8 +108,6 @@ void ScreenProcess::start() {
 	//check if running
 	isRunning = true;
 	timeMade = getTime();
-
-	//if possible you could link this to runStep have it thread?
 }
 
 void ScreenProcess::stop() {
@@ -123,29 +121,15 @@ void ScreenProcess::runStep() {
 
 	//should make it while loop instead?
 
-	if (linesCompleted < numberOfProcess && isRunning) {
+	if (linesCompleted < numberOfProcess) {
 		linesCompleted++;
 		string name = getProcessName();
-		cout << name << " > executed process " << linesCompleted << endl;
+		// cout << name << " > executed process " << linesCompleted << endl;
 		//doSomething like
-		//cout << executed at getTime()
 		//maybe write in file or whatever
+		//this_thread::sleep_for(std::chrono::milliseconds(delay?));
 	}
 	else finish();
-
-
-	//for threading something similar should be done (while loop)
-	//void ScreenProcess::runStep() {
-		//while (linesCompleted < numberOfProcess && isRunning) {
-		//	linesCompleted++;
-		//	cout << processName << "> executed process " << linesCompleted << endl;
-		//	// Additional actions like logging or writing to a file
-		//}
-		//if (linesCompleted == numberOfProcess) {
-		//	finish();
-		//}
-	//}
-
 }
 
 void ScreenProcess::finish() {
@@ -153,6 +137,7 @@ void ScreenProcess::finish() {
 	if (linesCompleted == numberOfProcess) {
 		stop();
 		isFinished = true;
+		//cout << "Process "<< processName << " finished" << endl;
 	}
 }
 
