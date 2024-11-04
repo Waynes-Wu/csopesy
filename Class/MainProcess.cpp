@@ -32,7 +32,7 @@ void MainProcess::open() {
 		}
 		
 		// slow down counter
-		this_thread::sleep_for(chrono::milliseconds(10));
+		this_thread::sleep_for(chrono::milliseconds(1));
 		/*cout << CPUCOUNTER << " | ";*/
 		CPUCOUNTER++;
 		
@@ -145,15 +145,26 @@ bool MainProcess::inputChecker(string & input) {
 				cout << "Cores used: " << config.num_cpu - coreCount << endl;
 				cout << "Cores available: " << coreCount<< endl;
 				cout << ESC << YELLOW_TXT << "\n----------------------------------------------------------" << RESET << endl;
+
+				//------------------RUNNING----------------------
 				cout << "Running processes:" << endl;
 				cout << setw(15) << "Process Name" << setw(30) << "(time)" << setw(10) << "Core" << setw(20) << "Lines" << endl;
+				int displayLimit = 30;
+				int displayCounter = 0;
 
 				for (const auto& process : activeProcesses) {
 					cout << setw(15) << process->getProcessName()
 						<< setw(30) << process->timeMade
 						<< setw(10) << (process->coreID == -1 ? "" : to_string(process->coreID))
 						<< setw(20) << process->linesCompleted << "/" << process->numberOfProcess << endl;
+					
+					if (++displayCounter == displayLimit) {
+						cout << "And " << (activeProcesses.size() - displayLimit) << " other more processes" << endl;
+						break;
+					}
 				}
+
+				//--------------------FINISHED---------------------
 
 				cout << "\nFinished processes:" << endl;
 				cout << setw(15) << "Process Name" << setw(30) << "(time)" << setw(10) << "Status" << setw(20) << "Lines" << endl;
@@ -175,7 +186,68 @@ bool MainProcess::inputChecker(string & input) {
 			scheduler->generate = false;
 		}
 
-		else if (main_command == "report-util");
+		else if (main_command == "report-util") {
+			 
+			ofstream logFile("csopesy-log.txt"); // Open file for writing
+			if (!logFile.is_open()) {
+				cout << "Error opening log file." << endl;
+				return true;
+			}
+			streambuf* coutBuf = cout.rdbuf();
+			cout.rdbuf(logFile.rdbuf());
+
+			// Print the process report to the file through cout
+			vector<ScreenProcess*> activeProcesses;
+			vector<ScreenProcess*> finishedProcesses;
+
+			// Separate active and finished processes
+			for (auto* process : processList) {
+				if (process->isFinished) {
+					finishedProcesses.push_back(process);
+				}
+				else {
+					activeProcesses.push_back(process);
+				}
+			}
+			int coreCount = scheduler->getAvailCoreCount();
+			// Display CPU utilization and cores information
+			cout << "CPU utilization: " << (config.num_cpu - coreCount) / config.num_cpu * 100 << "%" << endl;
+			cout << "Cores used: " << config.num_cpu - coreCount << endl;
+			cout << "Cores available: " << coreCount << endl;
+
+			cout << "\n----------------------------------------------------------" << endl;
+			//------------------RUNNING----------------------
+			cout << "Running processes:" << endl;
+			cout << setw(15) << "Process Name" << setw(30) << "(time)" << setw(10) << "Core" << setw(20) << "Lines" << endl;
+
+			for (const auto& process : activeProcesses) {
+				cout << setw(15) << process->getProcessName()
+					<< setw(30) << process->timeMade
+					<< setw(10) << (process->coreID == -1 ? "" : to_string(process->coreID))
+					<< setw(20) << process->linesCompleted << "/" << process->numberOfProcess << endl;
+			}
+
+			//--------------------FINISHED---------------------
+			cout << "\nFinished processes:" << endl;
+			cout << setw(15) << "Process Name" << setw(30) << "(time)" << setw(10) << "Status" << setw(20) << "Lines" << endl;
+
+			for (const auto& process : finishedProcesses) {
+				cout << setw(15) << process->getProcessName()
+					<< setw(30) << process->timeFinished
+					<< setw(10) << "Finished"
+					<< setw(20) << process->linesCompleted << "/" << process->numberOfProcess << endl;
+			}
+
+			cout << "\n----------------------------------------------------------" << endl;
+
+
+			// Reset cout to console output
+			cout.rdbuf(coutBuf);
+			logFile.close();
+
+			cout << "Process report saved to csopesy-log.txt." << endl;
+		}
+
 		else if (main_command == "clear")
 			system("cls");
 		else if (main_command == "exit") 

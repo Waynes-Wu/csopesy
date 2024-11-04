@@ -52,7 +52,7 @@ private:
     // Scheduling algorithms make empty first
     void startRoundRobin(int timeQuantum);
     void startFCFS();
-    void startSJF();
+    void startSJF(bool preemptive);
 
     //?
     condition_variable queueCondVar; 

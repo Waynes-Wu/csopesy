@@ -1,0 +1,45 @@
+CPU utilization: 0%
+Cores used: 0
+Cores available: 4
+
+----------------------------------------------------------
+Running processes:
+   Process Name                        (time)      Core               Lines
+
+Finished processes:
+   Process Name                        (time)    Status               Lines
+             p0       11/04/2024, 01:51:04 PM  Finished                  40/40
+             p1       11/04/2024, 01:51:05 PM  Finished                  95/95
+             p2       11/04/2024, 01:51:05 PM  Finished                  80/80
+             p3       11/04/2024, 01:51:05 PM  Finished                  81/81
+             p4       11/04/2024, 01:51:05 PM  Finished                  15/15
+             p5       11/04/2024, 01:51:05 PM  Finished                  15/15
+             p6       11/04/2024, 01:51:06 PM  Finished                  29/29
+             p7       11/04/2024, 01:51:07 PM  Finished                  68/68
+             p8       11/04/2024, 01:51:07 PM  Finished                  73/73
+             p9       11/04/2024, 01:51:06 PM  Finished                  18/18
+            p10       11/04/2024, 01:51:07 PM  Finished                  48/48
+            p11       11/04/2024, 01:51:08 PM  Finished                  54/54
+            p12       11/04/2024, 01:51:08 PM  Finished                  63/63
+            p13       11/04/2024, 01:51:08 PM  Finished                  51/51
+            p14       11/04/2024, 01:51:09 PM  Finished                  61/61
+            p15       11/04/2024, 01:51:09 PM  Finished                  96/96
+            p16       11/04/2024, 01:51:08 PM  Finished                  11/11
+            p17       11/04/2024, 01:51:10 PM  Finished                  98/98
+            p18       11/04/2024, 01:51:10 PM  Finished                  41/41
+            p19       11/04/2024, 01:51:11 PM  Finished                  91/91
+            p20       11/04/2024, 01:51:10 PM  Finished                  46/46
+            p21       11/04/2024, 01:51:11 PM  Finished                  98/98
+            p22       11/04/2024, 01:51:11 PM  Finished                  27/27
+            p23       11/04/2024, 01:51:11 PM  Finished                  56/56
+            p24       11/04/2024, 01:51:11 PM  Finished                  34/34
+            p25       11/04/2024, 01:51:12 PM  Finished                  35/35
+            p26       11/04/2024, 01:51:13 PM  Finished                  97/97
+            p27       11/04/2024, 01:51:12 PM  Finished                  39/39
+            p28       11/04/2024, 01:51:13 PM  Finished                  47/47
+            p29       11/04/2024, 01:51:13 PM  Finished                  20/20
+            p30       11/04/2024, 01:51:14 PM  Finished                  83/83
+            p31       11/04/2024, 01:51:13 PM  Finished                  29/29
+            p32       11/04/2024, 01:51:15 PM  Finished                  99/99
+
+----------------------------------------------------------

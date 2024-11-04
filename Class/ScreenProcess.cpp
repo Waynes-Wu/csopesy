@@ -127,7 +127,7 @@ void ScreenProcess::runStep() {
 		// cout << name << " > executed process " << linesCompleted << endl;
 		//doSomething like
 		//maybe write in file or whatever
-		//this_thread::sleep_for(std::chrono::milliseconds(delay?));
+		//this_thread::sleep_for(chrono::milliseconds(delay?));
 	}
 	else finish();
 }

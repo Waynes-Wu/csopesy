@@ -16,7 +16,7 @@ void Scheduler::generateProcesses(int CPUCOUNTER) {
     //while (generate && CPUCOUNTER % config.batch_process_freq == 0) {
     if (generate && CPUCOUNTER % config.batch_process_freq == 0) {
         // Generate a random process (this is a placeholder)
-        int randomSteps = rand() % (config.max_ins - config.min_ins + 1) + config.min_ins;
+        unsigned int randomSteps = rand() % (config.max_ins - config.min_ins + 1) + config.min_ins;
         ScreenProcess *newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps);
 
         processList->push_back(newProcess);
@@ -39,8 +39,8 @@ void Scheduler::start() {
     else if (config.scheduler == "rr") {
         startRoundRobin(config.quantum_cycles);
     }
-    else if (config.scheduler == "SJF") {
-        startSJF();
+    else if (config.scheduler == "sjf") {
+        startSJF(false);
     }
 }
 
@@ -78,7 +78,7 @@ void Scheduler::startRoundRobin(int timeQuantum) {
             readyQueue.pop();
              
             // Threaded execution with time slice
-            thread(static_cast<void (CPU::*)(int, int)>(&CPU::run), &cpu, config.delays_per_exec, timeQuantum).detach();
+            thread(static_cast<void (CPU::*)(unsigned int, unsigned int)>(&CPU::run), &cpu, config.delays_per_exec, timeQuantum).detach();
 
             }
 
@@ -102,16 +102,71 @@ void Scheduler::startFCFS() {
             readyQueue.pop();
 
             //threaded
-            thread(static_cast<void (CPU::*)(int)>(&CPU::run), &cpu, config.delays_per_exec).detach();
+            thread(static_cast<void (CPU::*)(unsigned int)>(&CPU::run), &cpu, config.delays_per_exec).detach();
         }
         ////non-threaded running
         //cpu.run();
     }
 }
 
-void Scheduler::startSJF() {
-    // Implement SJF scheduling logic similar to the others,
-    // but prioritize processes based on their remaining steps.
+void Scheduler::startSJF(bool preemptive) {
+    //isRunning = true;
+
+    //if (newProcessAdded) {
+    //    readyQueue.push(processList->back());
+    //    newProcessAdded = false;
+    //}
+    //int availCPU = getAvailCoreCount();
+
+
+    //for (auto& cpu : cpus) {
+    //    if (!cpu.isBusy()) {
+    //        if (!readyQueue.empty()) {
+    //            ScreenProcess* shortestProcess = nullptr;
+
+    //            for (size_t i = 0; i < readyQueue.size(); ++i) {
+    //                ScreenProcess* process = readyQueue.front();
+    //                readyQueue.pop();
+    //                if (shortestProcess == nullptr || process->burstTime < shortestProcess->burstTime) {
+    //                    if (shortestProcess != nullptr) {
+    //                        readyQueue.push(shortestProcess);
+    //                    }
+    //                    shortestProcess = process;
+    //                }
+    //                else {
+    //                    readyQueue.push(process);
+    //                }
+    //            }
+
+    //            cpu.assignProcess(shortestProcess);
+
+    //            if (preemptive) {
+    //                thread(&CPU::run, &cpu, config.delays_per_exec, shortestProcess->burstTime).detach();
+    //            }
+    //            else {
+    //                thread(&CPU::run, &cpu, config.delays_per_exec, shortestProcess->burstTime).detach();
+    //            }
+
+    //            readyQueue.pop();
+    //        }
+    //    }
+    //    else {
+    //        if (preemptive) {
+    //            ScreenProcess* currentProcess = cpu.currentProcess;
+    //            for (size_t i = 0; i < readyQueue.size(); ++i) {
+    //                ScreenProcess* process = readyQueue.front();
+    //                readyQueue.pop();
+    //                if (process->burstTime < currentProcess->burstTime) {
+    //                    readyQueue.push(currentProcess);
+    //                    cpu.assignProcess(process);
+    //                    thread(&CPU::run, &cpu, config.delays_per_exec, process->burstTime).detach();
+    //                    break;
+    //                }
+    //                readyQueue.push(process);
+    //            }
+    //        }
+    //    }
+    //}
 }
 
 

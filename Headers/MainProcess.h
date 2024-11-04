@@ -6,6 +6,7 @@
 #include "ConfigReader.h"
 #include "Scheduler.h"
 #include<conio.h>
+#include <streambuf>
 
 using namespace std;
 
@@ -31,7 +32,7 @@ public:
 
  private:
      bool inputChecker(string &input);
-     int CPUCOUNTER = 1;
+     long long CPUCOUNTER = 1;
      bool initialized = false;
 };
 

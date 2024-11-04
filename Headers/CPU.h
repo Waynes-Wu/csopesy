@@ -13,8 +13,8 @@ public:
     // Public Methods
     bool isBusy();            // Check if the CPU is busy with a process
     void assignProcess(ScreenProcess* process); // Assign a new process to the CPU
-    void run(int executionDelay);                     // Run one step of the assigned process
-    void run(int executionDelay, int maxLines); 
+    void run(unsigned int executionDelay);                     // Run one step of the assigned process
+    void run(unsigned int executionDelay, unsigned int maxLines);
     void clearProcess();            // Clear the current process when finished
     int getID();
     ScreenProcess* currentProcess;  // Pointer to the current process assigned to this CPU

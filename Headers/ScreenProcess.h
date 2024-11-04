@@ -17,8 +17,8 @@ public:
     string input;
 
     string processName;
-    int linesCompleted;
-    int numberOfProcess;
+    unsigned int linesCompleted;
+    unsigned int numberOfProcess;
     // Constructor
     ScreenProcess(string name);
     ScreenProcess(string name, int numberOfProcesses);
