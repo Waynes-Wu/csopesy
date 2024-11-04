@@ -48,46 +48,60 @@ bool ScreenProcess::inputChecker(string& input) {
 	int commandCount = tokenizedInput.size();
 	string main_command = tokenizedInput[0];
 	
-	if (main_command == "screen") {
-		if (commandCount == 1) { cout << "use -r -s or -ls" << endl; return true; }
-		string arg_command = tokenizedInput[1];
-		//RE-ATTACH TO THE GIVEN THINGY
-		if (arg_command == "-r") {
-			if (commandCount < 3) { cout << "no arguments after using -r" << endl; return true; }
-			bool isFound = false;
-			for (auto element : processList) {
-				if (element.getProcessName() == tokenizedInput[2]) {
-					isFound = true;
-					system("cls");
-					element.open();
-					system("cls");
-					printHeader();
-				}
-			}
-			if (!isFound) {
-				cout << tokenizedInput[2] << " not found" << endl;;
-			}
-		}
-		else if (arg_command == "-s") {
-			// CREATE NEW PROCESS
-			if (commandCount < 3) { cout << "no arguments after using -s" << endl; }
-			ScreenProcess newScreen(tokenizedInput[2]);
-			processList.push_back(newScreen);
-			cout << "new process added!" << endl;
-			system("cls");
-			newScreen.open();
-			system("cls");
-			printHeader();
-		}
-		else if (arg_command == "-ls") {
-			printActiveProcesses();
-		}
-	}
+	//if (main_command == "screen") {
+	//	if (commandCount == 1) { cout << "use -r -s or -ls" << endl; return true; }
+	//	string arg_command = tokenizedInput[1];
+	//	//RE-ATTACH TO THE GIVEN THINGY
+	//	if (arg_command == "-r") {
+	//		if (commandCount < 3) { cout << "no arguments after using -r" << endl; return true; }
+	//		bool isFound = false;
+	//		for (auto element : processList) {
+	//			if (element.getProcessName() == tokenizedInput[2]) {
+	//				isFound = true;
+	//				system("cls");
+	//				element.open();
+	//				system("cls");
+	//				printHeader();
+	//			}
+	//		}
+	//		if (!isFound) {
+	//			cout << tokenizedInput[2] << " not found" << endl;;
+	//		}
+	//	}
+	//	else if (arg_command == "-s") {
+	//		// CREATE NEW PROCESS
+	//		if (commandCount < 3) { cout << "no arguments after using -s" << endl; }
+	//		ScreenProcess newScreen(tokenizedInput[2]);
+	//		processList.push_back(newScreen);
+	//		cout << "new process added!" << endl;
+	//		system("cls");
+	//		newScreen.open();
+	//		system("cls");
+	//		printHeader();
+	//	}
+	//	else if (arg_command == "-ls") {
+	//		printActiveProcesses();
+	//	}
+	//}
 	//else if (main_command == "scheduler-test");
 	//else if (main_command == "scheduler-stop");
 	//else if (main_command == "report-util");
 	//else if (main_command == "clear");
 
+
+	if (main_command == "process-smi") {
+		cout << endl;
+		cout << "Process: " << processName << endl;
+		cout << "ID : " << (coreID == -1 ? "" : to_string(coreID)) << endl << endl;
+
+		if (isFinished) {
+		cout << "Finished!" << endl << endl;
+		}
+		else {
+		cout << "Current instruction line : " << linesCompleted << endl;
+		cout << "Lines of code : " << numberOfProcess << endl << endl;
+		}
+	}
 	else if (main_command == "exit")
 		return false;
 

@@ -3,5 +3,5 @@ scheduler fcfs
 quantum-cycles 5
 batch-process-freq 20
 min-ins 10
-max-ins 100
+max-ins 1000000
 delays-per-exec 10
