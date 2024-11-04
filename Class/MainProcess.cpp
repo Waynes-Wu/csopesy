@@ -32,7 +32,7 @@ void MainProcess::open() {
 		}
 		
 		// slow down counter
-		this_thread::sleep_for(chrono::milliseconds(1));
+		//this_thread::sleep_for(chrono::milliseconds(1));
 		/*cout << CPUCOUNTER << " | ";*/
 		CPUCOUNTER++;
 		

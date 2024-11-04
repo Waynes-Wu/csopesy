@@ -47,7 +47,7 @@ void Scheduler::start() {
 int Scheduler::getAvailCoreCount() {
     int availCPU = 0;
     for (auto& cpu : cpus) {
-        if (!cpu.isBusy())
+        if (cpu.currentProcess == nullptr)
             availCPU++;
     }
     return availCPU;
