@@ -16,12 +16,15 @@ public:
     string timeFinished;
     string input;
 
+    void* memoryPointer;
+    size_t memoryRequired;
+
     string processName;
     unsigned int linesCompleted;
     unsigned int numberOfProcess;
     // Constructor
     ScreenProcess(string name);
-    ScreenProcess(string name, int numberOfProcesses);
+    ScreenProcess(string name, int numberOfProcesses, size_t memoryRequired);
 
     // Getters
     string getProcessName();

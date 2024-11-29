@@ -133,7 +133,9 @@
   <ItemGroup>
     <ClCompile Include="Class\ConfigReader.cpp" />
     <ClCompile Include="Class\CPU.cpp" />
+    <ClCompile Include="Class\FlatMemoryAllocator.cpp" />
     <ClCompile Include="Class\MainProcess.cpp" />
+    <ClCompile Include="Class\PagingAllocator.cpp" />
     <ClCompile Include="Class\Process.cpp" />
     <ClCompile Include="Class\Scheduler.cpp" />
     <ClCompile Include="Class\ScreenProcess.cpp" />
@@ -142,7 +144,11 @@
   <ItemGroup>
     <ClInclude Include="Headers\ConfigReader.h" />
     <ClInclude Include="Headers\CPU.h" />
+    <ClInclude Include="Headers\FirstFit.h" />
+    <ClInclude Include="Headers\FlatMemoryAllocator.h" />
     <ClInclude Include="Headers\MainProcess.h" />
+    <ClInclude Include="Headers\MemoryAllocator.h" />
+    <ClInclude Include="Headers\PagingAllocator.h" />
     <ClInclude Include="Headers\Process.h" />
     <ClInclude Include="Headers\Scheduler.h" />
     <ClInclude Include="Headers\ScreenProcess.h" />

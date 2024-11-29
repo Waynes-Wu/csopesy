@@ -1,6 +1,7 @@
 #pragma once
-#include "../Headers/ScreenProcess.h"
-#include "../Headers/ConfigReader.h"
+#include "ScreenProcess.h"
+#include "ConfigReader.h"
+#include "MemoryAllocator.h"
 
 using namespace std;
 #include <queue>
@@ -18,10 +19,11 @@ public:
 
     atomic<bool> generate;
     queue<ScreenProcess*> readyQueue;
+    queue<ScreenProcess*> inMemoryQueue;
     bool newProcessFlag = false;
 
     // Constructor
-    Scheduler(Config config, vector<ScreenProcess*>* processList);
+    Scheduler(Config config, vector<ScreenProcess*>* processList, MemoryAllocator* allocator);
 
     //generate random values [config.min-ins, config.max - ins]
     void generateProcesses(int CPUCOUNTER);
@@ -56,6 +58,6 @@ private:
 
     //?
     condition_variable queueCondVar; 
-
+    MemoryAllocator* allocator = nullptr;
 };
 

@@ -7,6 +7,9 @@
 #include "Scheduler.h"
 #include<conio.h>
 #include <streambuf>
+#include "MemoryAllocator.h"
+#include "FlatMemoryAllocator.h"
+#include "PagingAllocator.h"
 
 using namespace std;
 
@@ -34,5 +37,6 @@ public:
      bool inputChecker(string &input);
      long long CPUCOUNTER = 1;
      bool initialized = false;
+     MemoryAllocator* allocator = nullptr;
 };
 

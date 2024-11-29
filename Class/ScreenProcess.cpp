@@ -1,8 +1,17 @@
 #include "../Headers/ScreenProcess.h"
 
-ScreenProcess::ScreenProcess(string name) : coreID(-1), isRunning(false), isFinished(false), processName(name), timeMade(getTime()), numberOfProcess(10), linesCompleted(0) {}
+ScreenProcess::ScreenProcess(string name)
+	: coreID(-1), isRunning(false), isFinished(false), processName(name),
+	timeMade(getTime()), timeFinished(""), memoryPointer(nullptr),
+	memoryRequired(static_cast<size_t>(50)), linesCompleted(0), numberOfProcess(10) {
+}
 
-ScreenProcess::ScreenProcess(string name, int numberOfProcesses) : coreID(-1), isRunning(false), isFinished(false), processName(name), timeMade(getTime()), numberOfProcess(numberOfProcesses), linesCompleted(0) {}
+// Multi-parameter Constructor
+ScreenProcess::ScreenProcess(string name, int numberOfProcesses, size_t memoryRequired)
+	: coreID(-1), isRunning(false), isFinished(false), processName(name),
+	timeMade(getTime()), timeFinished(""), memoryPointer(nullptr),
+	memoryRequired(memoryRequired), linesCompleted(0), numberOfProcess(numberOfProcesses) {
+}
 
 string ScreenProcess::getProcessName() {
 	return processName;

@@ -1,7 +1,7 @@
 #include "../Headers/Scheduler.h"
 
 // Constructor
-Scheduler::Scheduler(Config config, vector<ScreenProcess*>* processList) : config(config), processList(processList), nextPid(0), generate(false), numCPUs(config.num_cpu), isRunning(false) {
+Scheduler::Scheduler(Config config, vector<ScreenProcess*>* processList, MemoryAllocator* allocator) : config(config), processList(processList), nextPid(0), generate(false), numCPUs(config.num_cpu), isRunning(false), allocator(allocator) {
     srand(static_cast<unsigned>(time(0)));
     for (int i = 0; i < numCPUs; ++i) {
         cpus.emplace_back(CPU(i));
@@ -17,17 +17,18 @@ void Scheduler::generateProcesses(int CPUCOUNTER) {
     if (generate && CPUCOUNTER % config.batch_process_freq == 0) {
         // Generate a random process (this is a placeholder)
         unsigned int randomSteps = rand() % (config.max_ins - config.min_ins + 1) + config.min_ins;
-        ScreenProcess *newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps);
+        
+        // TODO: how much memory needed for a process?
+        ScreenProcess *newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps, config.mem_per_proc);
 
         processList->push_back(newProcess);
         newProcessAdded = true;
-        //this_thread::sleep_for(chrono::milliseconds(1000));
+        
     }
     return;
 }
 void Scheduler::stopGenerateProcesses() {
-    isRunning = false; // Set running to false to stop threads
-    //queueCondVar.notify_all(); // Wake up all threads
+    isRunning = false; 
 }
 
 
@@ -57,33 +58,62 @@ int Scheduler::getAvailCoreCount() {
 //if flag = true then new process has arrived 
 void Scheduler::startRoundRobin(int timeQuantum) {
     isRunning = true;
-
+     
     if (newProcessAdded) {
         readyQueue.push(processList->back());
         newProcessAdded = false;
     }
+     
+    //int availCPU = getAvailCoreCount();
+     
+    queue<ScreenProcess*> tempQueue;
+    while (!readyQueue.empty()) {
+        ScreenProcess* process = readyQueue.front();
+        readyQueue.pop();
 
-    int availCPU = getAvailCoreCount();
+        //check if the process can be allocated
+        void* allocatedMemory = allocator->allocate(process);
 
+        if (!allocatedMemory) {
+            tempQueue.push(process);
+            continue;
+        }
+
+        //memoryvalid, push the process in memory
+        process->memoryPointer = allocatedMemory;
+        inMemoryQueue.push(process); 
+    }
+    swap(readyQueue, tempQueue); 
+     
     for (auto& cpu : cpus) {
         if (!cpu.isBusy()) {
-            //if cpu is not busy and has process
+            //process not yet cleared
             if (cpu.currentProcess != nullptr) {
-            readyQueue.push(cpu.currentProcess);
+                if (cpu.currentProcess->isFinished) {
+                    allocator->deallocate(cpu.currentProcess);
+                    cpu.clearProcess();
+                }
+                else {
+                    inMemoryQueue.push(cpu.currentProcess);
+                }
             }
 
-            //do this after its been pushed
-            if (!readyQueue.empty()) {
-            cpu.assignProcess(readyQueue.front());
-            readyQueue.pop();
-             
-            // Threaded execution with time slice
-            thread(static_cast<void (CPU::*)(unsigned int, unsigned int)>(&CPU::run), &cpu, config.delays_per_exec, timeQuantum).detach();
+            // Assign a new process from inMemoryQueue if available
+            if (!inMemoryQueue.empty()) {
+                ScreenProcess* nextProcess = inMemoryQueue.front();
+                inMemoryQueue.pop();
+                cpu.assignProcess(nextProcess);
 
+                thread(
+                    static_cast<void (CPU::*)(unsigned int, unsigned int)>(&CPU::run),
+                    &cpu,
+                    config.delays_per_exec,
+                    timeQuantum
+                ).detach();
             }
-
         }
     }
+     
 }
 
 void Scheduler::startFCFS() {

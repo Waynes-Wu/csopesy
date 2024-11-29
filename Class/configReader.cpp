@@ -27,6 +27,15 @@ bool readConfig(Config &config) {
             } else if (param == "delays-per-exec") {
                 iss >> config.delays_per_exec;
             }
+            else if (param == "max-overall-mem") {
+                iss >> config.max_overall_mem;
+            }
+            else if (param == "mem-per-frame") {
+                iss >> config.mem_per_frame;
+            }
+            else if (param == "mem-per-proc") {
+                iss >> config.mem_per_proc;
+            }
         }
     }
     config.isInitialized = true;

@@ -72,7 +72,15 @@ bool MainProcess::inputChecker(string & input) {
 			if (main_command == "initialize") {
 				if (readConfig(config)) {
 					cout << "Configuration loaded successfully!" << endl;
-					scheduler = new Scheduler(config, &processList);
+
+					if (config.max_overall_mem == config.mem_per_frame) {
+						allocator = new FlatMemoryAllocator(config.max_overall_mem);
+					}
+					else {
+						allocator = new PagingAllocator(config.max_overall_mem, config.mem_per_frame);
+					}
+
+					scheduler = new Scheduler(config, &processList, allocator);
 					initialized = true;
 				}
 				else {

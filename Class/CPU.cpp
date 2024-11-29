@@ -53,14 +53,15 @@ void CPU::run(unsigned int executionDelay, unsigned int maxLines) {
             currentProcess->runStep(); // Execute one step of the process
             this_thread::sleep_for(chrono::milliseconds(executionDelay)); // Introduce delay
         }
+        busy = false;
 
-        // Check if the process is finished
-        if (currentProcess->isFinished) {
-            clearProcess();
-        } 
-        else {
-            busy = false;
-        }
+    //    // Check if the process is finished
+    //    if (currentProcess->isFinished) {
+    //        clearProcess();
+    //    } 
+    //    else {
+    //        busy = false;
+    //    }
     }
 
 }
