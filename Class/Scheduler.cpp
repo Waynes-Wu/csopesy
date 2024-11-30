@@ -19,7 +19,7 @@ void Scheduler::generateProcesses(int CPUCOUNTER) {
         unsigned int randomSteps = rand() % (config.max_ins - config.min_ins + 1) + config.min_ins;
         
         // TODO: how much memory needed for a process?
-        ScreenProcess *newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps, config.mem_per_proc);
+        ScreenProcess *newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps, config.min_mem_per_proc + rand() % (config.max_mem_per_proc - config.min_mem_per_proc + 1));
 
         processList->push_back(newProcess);
         newProcessAdded = true;
@@ -58,15 +58,14 @@ int Scheduler::getAvailCoreCount() {
 //if flag = true then new process has arrived 
 void Scheduler::startRoundRobin(int timeQuantum) {
     isRunning = true;
-     
+
     if (newProcessAdded) {
         readyQueue.push(processList->back());
         newProcessAdded = false;
     }
-     
-    //int availCPU = getAvailCoreCount();
-     
+
     queue<ScreenProcess*> tempQueue;
+    
     while (!readyQueue.empty()) {
         ScreenProcess* process = readyQueue.front();
         readyQueue.pop();
@@ -75,16 +74,18 @@ void Scheduler::startRoundRobin(int timeQuantum) {
         void* allocatedMemory = allocator->allocate(process);
 
         if (!allocatedMemory) {
-            tempQueue.push(process);
+            // If memory allocation fails, move the process to the backing store
+            backingStore.push(process);
             continue;
         }
 
         //memoryvalid, push the process in memory
         process->memoryPointer = allocatedMemory;
-        inMemoryQueue.push(process); 
+        inMemoryQueue.push(process);
     }
-    swap(readyQueue, tempQueue); 
-     
+
+    swap(readyQueue, tempQueue);
+
     for (auto& cpu : cpus) {
         if (!cpu.isBusy()) {
             //process not yet cleared
@@ -111,9 +112,31 @@ void Scheduler::startRoundRobin(int timeQuantum) {
                     timeQuantum
                 ).detach();
             }
+            // if memory queue is empty, check the backing store
+            else if (!backingStore.empty()) {
+                // load process from backing store to memory
+                ScreenProcess* nextProcess = backingStore.front();
+                backingStore.pop();
+
+                void* allocatedMemory = allocator->allocate(nextProcess);
+                if (allocatedMemory) {
+                    nextProcess->memoryPointer = allocatedMemory;
+                    cpu.assignProcess(nextProcess);
+
+                    thread(
+                        static_cast<void (CPU::*)(unsigned int, unsigned int)>(&CPU::run),
+                        &cpu,
+                        config.delays_per_exec,
+                        timeQuantum
+                    ).detach();
+                }
+                else {
+                    // if fail, return process to backing store
+                    backingStore.push(nextProcess);
+                }
+            }
         }
     }
-     
 }
 
 void Scheduler::startFCFS() {

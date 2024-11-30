@@ -14,7 +14,8 @@ struct Config {
     bool isInitialized = false;
     size_t max_overall_mem;
     size_t mem_per_frame;
-    size_t mem_per_proc;
+    size_t min_mem_per_proc;
+    size_t max_mem_per_proc;
 };
 
 bool readConfig(Config &config);
