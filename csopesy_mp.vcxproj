@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class\BackingStore.cpp" />
     <ClCompile Include="Class\ConfigReader.cpp" />
     <ClCompile Include="Class\CPU.cpp" />
     <ClCompile Include="Class\FlatMemoryAllocator.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="csopesy_mp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\BackingStore.h" />
     <ClInclude Include="Headers\ConfigReader.h" />
     <ClInclude Include="Headers\CPU.h" />
     <ClInclude Include="Headers\FirstFit.h" />

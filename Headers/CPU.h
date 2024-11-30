@@ -18,7 +18,8 @@ public:
     void clearProcess();            // Clear the current process when finished
     int getID();
     ScreenProcess* currentProcess;  // Pointer to the current process assigned to this CPU
-
+    long activeTicks;
+    long idleTicks;
 private:
     bool busy;                      // Status flag to indicate if the CPU is busy
     int number;

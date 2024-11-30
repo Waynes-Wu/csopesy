@@ -2,8 +2,10 @@
 #include "ScreenProcess.h"
 #include "ConfigReader.h"
 #include "MemoryAllocator.h"
+#include "BackingStore.h"
 
 using namespace std;
+#include <filesystem>
 #include <queue>
 #include <vector>
 #include <thread>

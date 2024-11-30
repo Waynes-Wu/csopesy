@@ -59,36 +59,51 @@ int Scheduler::getAvailCoreCount() {
 void Scheduler::startRoundRobin(int timeQuantum) {
     isRunning = true;
 
+    // Step 1: Add new processes to the readyQueue
     if (newProcessAdded) {
         readyQueue.push(processList->back());
         newProcessAdded = false;
     }
 
-    queue<ScreenProcess*> tempQueue;
-    
+    while (!BackingStore::empty()) {
+        ScreenProcess* processFromStore = BackingStore::pop();
+
+        void* allocatedMemory = allocator->allocate(processFromStore);
+        if (allocatedMemory) {
+            processFromStore->memoryPointer = allocatedMemory;
+            inMemoryQueue.push(processFromStore);
+        }
+        else {
+            // If memory allocation fails, push back to the backing store
+            BackingStore::push(processFromStore);
+            break; // Stop trying to load further processes
+        }
+    }
+
+
     while (!readyQueue.empty()) {
         ScreenProcess* process = readyQueue.front();
         readyQueue.pop();
 
-        //check if the process can be allocated
+        // Attempt to allocate memory
         void* allocatedMemory = allocator->allocate(process);
 
         if (!allocatedMemory) {
-            // If memory allocation fails, move the process to the backing store
-            backingStore.push(process);
-            continue;
+            // Memory allocation failed; move process to the backing store
+            BackingStore::push(process);
         }
-
-        //memoryvalid, push the process in memory
-        process->memoryPointer = allocatedMemory;
-        inMemoryQueue.push(process);
+        else {
+            // Memory allocation succeeded; move process to inMemoryQueue
+            process->memoryPointer = allocatedMemory;
+            inMemoryQueue.push(process);
+        }
     }
 
-    swap(readyQueue, tempQueue);
 
+    // Step 3: Handle processes in the inMemoryQueue (Round Robin Logic)
     for (auto& cpu : cpus) {
         if (!cpu.isBusy()) {
-            //process not yet cleared
+            // Process management logic for the CPU
             if (cpu.currentProcess != nullptr) {
                 if (cpu.currentProcess->isFinished) {
                     allocator->deallocate(cpu.currentProcess);
@@ -99,44 +114,29 @@ void Scheduler::startRoundRobin(int timeQuantum) {
                 }
             }
 
-            // Assign a new process from inMemoryQueue if available
+            // Assign a new process to the CPU from inMemoryQueue
             if (!inMemoryQueue.empty()) {
                 ScreenProcess* nextProcess = inMemoryQueue.front();
                 inMemoryQueue.pop();
                 cpu.assignProcess(nextProcess);
-
-                thread(
-                    static_cast<void (CPU::*)(unsigned int, unsigned int)>(&CPU::run),
-                    &cpu,
-                    config.delays_per_exec,
-                    timeQuantum
-                ).detach();
             }
-            // if memory queue is empty, check the backing store
-            else if (!backingStore.empty()) {
-                // load process from backing store to memory
-                ScreenProcess* nextProcess = backingStore.front();
-                backingStore.pop();
 
-                void* allocatedMemory = allocator->allocate(nextProcess);
-                if (allocatedMemory) {
-                    nextProcess->memoryPointer = allocatedMemory;
-                    cpu.assignProcess(nextProcess);
-
-                    thread(
-                        static_cast<void (CPU::*)(unsigned int, unsigned int)>(&CPU::run),
-                        &cpu,
-                        config.delays_per_exec,
-                        timeQuantum
-                    ).detach();
-                }
-                else {
-                    // if fail, return process to backing store
-                    backingStore.push(nextProcess);
-                }
-            }
+            // Execute the process
+            thread(
+                static_cast<void (CPU::*)(unsigned int, unsigned int)>(&CPU::run),
+                &cpu,
+                config.delays_per_exec,
+                timeQuantum
+            ).detach();
+        }
+        if (!cpu.isBusy()) {
+            cpu.idleTicks++;
+        }
+        else {
+            cpu.activeTicks++;
         }
     }
+
 }
 
 void Scheduler::startFCFS() {

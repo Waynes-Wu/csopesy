@@ -39,7 +39,7 @@ void CPU::run(unsigned int executionDelay) {
         // Run the process in steps until finished
         while (!currentProcess->isFinished) {
             //switching can be done just by reassigning?
-            currentProcess->runStep();  
+            currentProcess->runStep(); 
             this_thread::sleep_for(chrono::milliseconds(executionDelay));
         }
         clearProcess();
