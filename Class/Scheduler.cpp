@@ -13,6 +13,7 @@ Scheduler::Scheduler(Config config, vector<ScreenProcess*>* processList, MemoryA
 // Function to generate processes infinitely until stopped
 //vector<ScreenProcess*>& processList
 void Scheduler::generateProcesses(int CPUCOUNTER) {
+    int freq = config.batch_process_freq * 5;   
     //while (generate && CPUCOUNTER % config.batch_process_freq == 0) {
     if (generate && CPUCOUNTER % config.batch_process_freq == 0) {
         // Generate a random process (this is a placeholder)

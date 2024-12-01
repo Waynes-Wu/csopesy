@@ -9,6 +9,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -21,6 +22,10 @@ public:
 	void deallocate(ScreenProcess* process) override;
 	string visualizeMemory() override;
 
+	// Counters for paging
+	size_t getPageInCount() const;
+	size_t getPageOutCount() const;
+
 private:
 	size_t maxMemorySize;
 	size_t frameSize;
@@ -28,6 +33,12 @@ private:
 	vector<string> freeFrameList;
 	unordered_map<size_t, string> frameMap;
 
+	size_t pageInCounter = 0;  // Counter for pages brought into memory
+	size_t pageOutCounter = 0; // Counter for pages moved out of memory
+
 	size_t allocateFrames(size_t numFrames, string processId);
 	void deallocateFrames(size_t numFrames, size_t frameIndex);
+
+	// Helper to log debug messages
+	void logDebug(const string& message);
 };

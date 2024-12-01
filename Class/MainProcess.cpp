@@ -270,16 +270,28 @@ bool MainProcess::inputChecker(string& input) {
 			// CPU ticks and page information
 			long activeTicks = 0;
 			long idleTicks = 0;
-			long totalTicks = activeTicks + idleTicks;
+
+			
 
 			for (auto& cpu : scheduler->cpus) {
 				activeTicks += cpu.activeTicks;
 				idleTicks += cpu.idleTicks;
 			}
-			
+			long totalTicks = activeTicks + idleTicks;
+
+
 			size_t pagesIn =0 ;
 			size_t pagesOut =0;
-
+		
+			// Retrieve page in and page out counts if allocator is PagingAllocator
+			if (!(config.max_overall_mem == config.mem_per_frame)) {
+				PagingAllocator* pagingAllocator = dynamic_cast<PagingAllocator*>(allocator);
+				if (pagingAllocator) {
+					pagesIn = pagingAllocator->getPageInCount();
+					pagesOut = pagingAllocator->getPageOutCount();
+				}
+			}
+			
 
 			// Display memory and CPU information
 			std::cout << "===== ===== ===== ===== =====\n";
