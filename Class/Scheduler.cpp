@@ -106,8 +106,11 @@ void Scheduler::startRoundRobin(int timeQuantum) {
         if (!cpu.isBusy()) {
             // Process management logic for the CPU
             if (cpu.currentProcess != nullptr) {
+
+                allocator->deallocate(cpu.currentProcess);
+
                 if (cpu.currentProcess->isFinished) {
-                    allocator->deallocate(cpu.currentProcess);
+                    
                     cpu.clearProcess();
                 }
                 else {
