@@ -32,7 +32,7 @@ void MainProcess::open() {
 		}
 
 		// slow down counter
-		//this_thread::sleep_for(chrono::milliseconds(1));
+		this_thread::sleep_for(chrono::milliseconds(2));
 		/*cout << CPUCOUNTER << " | ";*/
 		CPUCOUNTER++;
 
@@ -292,12 +292,19 @@ bool MainProcess::inputChecker(string& input) {
 				}
 			}
 			
+			size_t freeMemory = totalMemory - usedMemory;
+
+			if (usedMemory > totalMemory) {
+				//cout << "[ERROR] Memory usage exceeds maximum memory size!" << endl;
+				usedMemory = totalMemory; // Clamp to max memory size
+				freeMemory = 0;
+			}
 
 			// Display memory and CPU information
 			std::cout << "===== ===== ===== ===== =====\n";
 			std::cout << "Total Memory: " << totalMemory << " KB\n";
 			std::cout << "Used Memory: " << usedMemory << " KB\n";
-			std::cout << "Free Memory: " << totalMemory - usedMemory << " KB\n";
+			std::cout << "Free Memory: " << freeMemory << " KB\n";
 			std::cout << "Idle CPU Ticks: " << idleTicks << "\n";
 			std::cout << "Active CPU Ticks: " << activeTicks << "\n";
 			std::cout << "Total CPU Ticks: " << totalTicks << "\n";

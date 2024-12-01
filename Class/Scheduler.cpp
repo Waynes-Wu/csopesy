@@ -13,28 +13,28 @@ Scheduler::Scheduler(Config config, vector<ScreenProcess*>* processList, MemoryA
 // Function to generate processes infinitely until stopped
 //vector<ScreenProcess*>& processList
 void Scheduler::generateProcesses(int CPUCOUNTER) {
-    int freq = config.batch_process_freq * 5;   
+    int freq = config.batch_process_freq * 5;
     //while (generate && CPUCOUNTER % config.batch_process_freq == 0) {
     if (generate && CPUCOUNTER % config.batch_process_freq == 0) {
         // Generate a random process (this is a placeholder)
         unsigned int randomSteps = rand() % (config.max_ins - config.min_ins + 1) + config.min_ins;
-        
+
         // TODO: how much memory needed for a process?
-        ScreenProcess *newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps, config.min_mem_per_proc + rand() % (config.max_mem_per_proc - config.min_mem_per_proc + 1));
+        ScreenProcess* newProcess = new ScreenProcess("p" + to_string(nextPid++), randomSteps, config.min_mem_per_proc + rand() % (config.max_mem_per_proc - config.min_mem_per_proc + 1));
 
         processList->push_back(newProcess);
         newProcessAdded = true;
-        
+
     }
     return;
 }
 void Scheduler::stopGenerateProcesses() {
-    isRunning = false; 
+    isRunning = false;
 }
 
 
 void Scheduler::start() {
-   
+
     if (config.scheduler == "fcfs") {
         startFCFS();
     }
@@ -59,28 +59,12 @@ int Scheduler::getAvailCoreCount() {
 //if flag = true then new process has arrived 
 void Scheduler::startRoundRobin(int timeQuantum) {
     isRunning = true;
-
+    
     // Step 1: Add new processes to the readyQueue
     if (newProcessAdded) {
         readyQueue.push(processList->back());
         newProcessAdded = false;
     }
-
-    while (!BackingStore::empty()) {
-        ScreenProcess* processFromStore = BackingStore::pop();
-
-        void* allocatedMemory = allocator->allocate(processFromStore);
-        if (allocatedMemory) {
-            processFromStore->memoryPointer = allocatedMemory;
-            inMemoryQueue.push(processFromStore);
-        }
-        else {
-            // If memory allocation fails, push back to the backing store
-            BackingStore::push(processFromStore);
-            break; // Stop trying to load further processes
-        }
-    }
-
 
     while (!readyQueue.empty()) {
         ScreenProcess* process = readyQueue.front();
@@ -100,6 +84,20 @@ void Scheduler::startRoundRobin(int timeQuantum) {
         }
     }
 
+    while (!BackingStore::empty()) {
+        ScreenProcess* processFromStore = BackingStore::pop();
+
+        void* allocatedMemory = allocator->allocate(processFromStore);
+        if (allocatedMemory) {
+            processFromStore->memoryPointer = allocatedMemory;
+            inMemoryQueue.push(processFromStore);
+        }
+        else {
+            // If memory allocation fails, push back to the backing store
+            BackingStore::push(processFromStore);
+            break; // Stop trying to load further processes
+        }
+    }
 
     // Step 3: Handle processes in the inMemoryQueue (Round Robin Logic)
     for (auto& cpu : cpus) {
@@ -110,7 +108,7 @@ void Scheduler::startRoundRobin(int timeQuantum) {
                 allocator->deallocate(cpu.currentProcess);
 
                 if (cpu.currentProcess->isFinished) {
-                    
+
                     cpu.clearProcess();
                 }
                 else {
@@ -145,12 +143,12 @@ void Scheduler::startRoundRobin(int timeQuantum) {
 
 void Scheduler::startFCFS() {
     isRunning = true;
-   
+
     if (newProcessAdded) {
         readyQueue.push(processList->back());
         newProcessAdded = false;
     }
-    
+
     int availCPU = getAvailCoreCount();
 
     for (auto& cpu : cpus) {

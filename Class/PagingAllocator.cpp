@@ -14,9 +14,21 @@ PagingAllocator::PagingAllocator(size_t maxMemorySize, size_t frameSize)
 void* PagingAllocator::allocate(ScreenProcess* process) {
     size_t numFramesNeeded = (process->memoryRequired + frameSize - 1) / frameSize;
 
+    size_t memoryNeeded = numFramesNeeded * frameSize;
+
+    size_t usedMemory = (numFrames - freeFrameList.size()) * frameSize;
+
+    if (usedMemory + memoryNeeded > maxMemorySize) {
+        logDebug("Memory allocation failed for process " + process->getProcessName() +
+            " due to insufficient memory. Used: " + to_string(usedMemory) +
+            " KB, Max: " + to_string(maxMemorySize) + " KB.");
+        return nullptr; 
+    }
+
+
     if (numFramesNeeded > freeFrameList.size()) {
         logDebug("Not enough free frames to allocate process " + process->getProcessName());
-        return nullptr; // Not enough free frames available
+        return nullptr; // Not enough free frames available 
     }
 
     size_t startFrame = allocateFrames(numFramesNeeded, process->processName);

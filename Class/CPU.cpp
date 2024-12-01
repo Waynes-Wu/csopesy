@@ -21,7 +21,7 @@ void CPU::assignProcess(ScreenProcess* process) {
 }
 
 // Run one step of the assigned process
-void CPU::run(unsigned int executionDelay) {
+void CPU::run(unsigned int executionDelay, unsigned int maxLines) {
 
     //if (currentProcess != nullptr) {
     //    currentProcess->runStep(); // Execute one time slice of the process
@@ -37,19 +37,26 @@ void CPU::run(unsigned int executionDelay) {
     if (currentProcess != nullptr) {
 
         // Run the process in steps until finished
-        while (!currentProcess->isFinished) {
+        while (maxLines-- && !currentProcess->isFinished) {
             //switching can be done just by reassigning?
             currentProcess->runStep(); 
             this_thread::sleep_for(chrono::milliseconds(executionDelay));
         }
-        clearProcess();
+        // Clear the process if it finishes
+        if (currentProcess->isFinished) {
+            clearProcess();
+        }
+        else {
+            // If the process isn't finished, mark the CPU as free for scheduling
+            busy = false;
+        }
     }
 
 }
-void CPU::run(unsigned int executionDelay, unsigned int maxLines) {
+void CPU::run(unsigned int executionDelay) {
     if (currentProcess != nullptr) {
 
-        while (maxLines-- && !currentProcess->isFinished) {
+        while (!currentProcess->isFinished) {
             currentProcess->runStep(); // Execute one step of the process
             this_thread::sleep_for(chrono::milliseconds(executionDelay)); // Introduce delay
         }
